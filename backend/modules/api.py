@@ -7,13 +7,15 @@ from .serializers import *
 from .validators import validate_python_code
 from django.utils import timezone
 
-class UserProgressAPI(generics.CreateAPIView):
+class UserProgressAPI(generics.ListCreateAPIView):
     serializer_class = UserProgressSerializer
     permission_classes = [permissions.IsAuthenticated]
+    def get_queryset(self):
+        return UserProgress.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-
+        
 class CodeSubmissionAPI(generics.CreateAPIView):
     serializer_class = SubmissionSerializer
     permission_classes = [permissions.IsAuthenticated]
